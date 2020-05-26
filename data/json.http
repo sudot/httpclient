@@ -1,0 +1,18 @@
+###
+GET http://{{host}}
+
+###
+GET http://{{host}}
+
+###
+GET /
+Host: {{host}}
+
+###
+POST /
+Host: {{host}}
+Content-Type: application/json
+
+{
+  "name": "张三"
+}
