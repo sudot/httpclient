@@ -8,7 +8,7 @@ httpclient
 
 ### 安装
 
-点击下载可执行文件：[httpclient]() 放置在任何你喜欢的位置。
+点击下载可执行文件：[httpclient](https://github.com/sudot/httpclient/releases) 放置在任何你喜欢的位置。
 
 **命令行**
 
