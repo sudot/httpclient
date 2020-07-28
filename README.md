@@ -13,7 +13,7 @@ httpclient
 **命令行**
 
 ```bash
-httpclient -f <请求内容文件>
+httpclient -f <请求内容文件>[#<数字>] -e <执行环境>
 ```
 
 参数说明：
