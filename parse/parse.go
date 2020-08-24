@@ -14,7 +14,9 @@ import (
 )
 
 // 解析出文件中的所有 HTTP 协议格式内容
+// 在去除前后空格的行中，以连续的 3 个 # 符号开头的为分段行
 // 解析后将所有请求内容已字符串数组形式返回
+// 若给定了 i 的值，且大于 0，则只返回 i 所对应的一个请求
 func ParseHTTP(path string, i int) []string {
 	paths := RecursiveFile(path)
 	splitPrefix := []byte("###")
@@ -27,28 +29,20 @@ func ParseHTTP(path string, i int) []string {
 		file, _ := os.Open(path)
 		// 一行一行的读取,不一次性全部读取
 		buf := bufio.NewReader(file)
-		line, _, err := buf.ReadLine()
-		var content []byte
-		for ; err == nil; line, _, err = buf.ReadLine() {
+		readLine, _, err := buf.ReadLine()
+		var lines []byte
+		for ; err == nil; readLine, _, err = buf.ReadLine() {
 			// 去除前后空格
-			s := bytes.TrimSpace(line)
+			s := bytes.TrimSpace(readLine)
 			if bytes.HasPrefix(s, splitPrefix) {
 				// 处理请求分段,三个 ###
 				// 本次分段内容为空就跳出,无需保留和初始化临时分段数据
-				if len(content) > 0 {
-					contents = append(contents, string(content))
-					content = nil
+				if len(lines) > 0 {
+					contents = append(contents, string(lines))
+					lines = nil
 				}
-				if i > 0 {
-					l := len(contents)
-					if l > 0 {
-						if l >= i {
-							contents = contents[i-1:]
-						} else {
-							contents = contents[:0]
-						}
-						break
-					}
+				if i > 0 && len(contents) >= i {
+					break
 				}
 				continue
 			} else {
@@ -62,24 +56,17 @@ func ParseHTTP(path string, i int) []string {
 				}
 				if isText {
 					// 正常文本行,保留原始内容,不去除前后空格
-					content = append(content, line...)
-					content = append(content, '\n')
+					lines = append(lines, readLine...)
+					lines = append(lines, '\n')
 				}
 			}
 		}
-		if len(content) > 0 {
-			contents = append(contents, string(content))
+		if len(lines) > 0 {
+			contents = append(contents, string(lines))
 		}
-		if i > 0 {
-			l := len(contents)
-			if l > 0 {
-				if l >= i {
-					contents = contents[i-1:]
-				} else {
-					contents = contents[:0]
-				}
-				break
-			}
+		if i > 0 && len(contents) >= i {
+			contents = contents[i-1 : i]
+			break
 		}
 	}
 	return contents

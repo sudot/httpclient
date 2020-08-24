@@ -15,13 +15,26 @@ import (
 	"strings"
 )
 
+var (
+	ph *bool
+	pf *string
+	pi *int
+	pe *string
+)
+
+func init() {
+	ph = flag.Bool("h", false, "显示帮助信息")
+	pf = flag.String("f", "", "文件路径，若 path 以 #[数字] 结尾(如:/a/b/c.txt#1)则表示只解析此文件中第[数字]个请求")
+	pi = flag.Int("i", -1, "请求片段，从 1 开始。优先级比 path 中 #[数字]优先级高")
+	pe = flag.String("e", "", "执行环境")
+}
+
 func main() {
-	ph := flag.Bool("h", false, "显示帮助信息")
-	pf := flag.String("f", "", "文件路径，若 path 以 #[数字] 结尾(如:/a/b/c.txt#1)则表示只解析此文件中第[数字]个请求")
-	pi := flag.Int("i", -1, "请求片段，从 1 开始。优先级比 path 中 #[数字]优先级高")
-	pe := flag.String("e", "", "执行环境")
 	flag.Parse()
 	h, f, i, e := *ph, *pf, *pi, *pe
+	//f = "data\\github.http"
+	//i = 2
+	//e = "local"
 	if h {
 		flag.Usage()
 		return
